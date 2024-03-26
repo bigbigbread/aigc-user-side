@@ -22,7 +22,7 @@ const defaultForm = {
   content: '', // string 内容
   state: '' // 状态
 }
-
+const tags = ref(['Tag1', 'Tag2'])
 // 准备数据
 const formModel = ref({ ...defaultForm })
 
@@ -139,7 +139,9 @@ defineExpose({
           width="100%"
         ></channel-select>
       </el-form-item>
-      <el-form-item label="文章封面" prop="cover_img">
+      <el-tag type="primary" v-for="tag in tags" :key="tag">{{ tag }}</el-tag>
+
+      <el-form-item label="文章封面" prop="cover_img" v-show="false">
         <!-- 此处需要关闭 element-plus 的自动上传，不需要配置 action 等参数
              只需要做前端的本地预览图片即可，无需在提交前上传图标
              语法：URL.createObjectURL(...) 创建本地预览的地址，来预览
@@ -165,7 +167,7 @@ defineExpose({
         </div>
       </el-form-item>
       <el-form-item>
-        <el-button @click="onPublish('已发布')" type="primary">发布</el-button>
+        <el-button @click="onPublish('已生成')" type="primary">生成</el-button>
         <el-button @click="onPublish('草稿')" type="info">草稿</el-button>
       </el-form-item>
     </el-form>

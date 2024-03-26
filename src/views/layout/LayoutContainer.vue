@@ -94,7 +94,7 @@ const handleCommand = async (key) => {
     <el-container>
       <el-header>
         <div>
-          黑马程序员：<strong>{{
+          AIGC文案机器人：<strong>{{
             userStore.user.nickname || userStore.user.username
           }}</strong>
         </div>
@@ -127,7 +127,7 @@ const handleCommand = async (key) => {
       <el-main>
         <router-view></router-view>
       </el-main>
-      <el-footer>大事件 ©2023 Created by 黑马程序员</el-footer>
+      <el-footer>AIGC文案机器人 ©2024 Created by 归队</el-footer>
     </el-container>
   </el-container>
 </template>
@@ -139,7 +139,7 @@ const handleCommand = async (key) => {
     background-color: #232323;
     &__logo {
       height: 120px;
-      background: url('@/assets/logo.png') no-repeat center / 120px auto;
+      background: url('@/assets/logo3.png') no-repeat center / 120px auto;
     }
     .el-menu {
       border-right: none;
