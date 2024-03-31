@@ -26,6 +26,10 @@ const router = createRouter({
           component: () => import('@/views/article/ArticleChannel.vue')
         },
         {
+          path: '/article/edit',
+          component: () => import('@/views/article/Edit.vue')
+        },
+        {
           path: '/user/profile',
           component: () => import('@/views/user/UserProfile.vue')
         },
