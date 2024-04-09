@@ -12,6 +12,7 @@ export const artDelChannelService = (id) =>
     params: { id }
   })
 
+
 // 文章1：获取文章列表
 export const artGetListService = () => request.get('/list')
 
@@ -34,4 +35,5 @@ export const artEditService = (id, data) =>
 // 文章：删除文章接口
 export const artDelService = (id) =>
   request.delete('/my/article/info', { params: { id } })
+
   export const artOutlineService = (data) => request.post('/createoutline', data)
