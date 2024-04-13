@@ -9,6 +9,6 @@
     "\\src\\views\\login",
     "\\src\\views\\user"
   ],
-  "SelectedNode": "\\index.html",
+  "SelectedNode": "\\src\\views\\article\\ArticleManage.vue",
   "PreviewInSolutionExplorer": false
 }

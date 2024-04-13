@@ -1,6 +1,7 @@
 <script setup>
     import { ref } from 'vue'
-    import { ElMessage, ElMessageBox, ElDialog } from 'element-plus'
+    import { ElMessage, ElMessageBox, ElDialog, ElButton } from 'element-plus'
+    import * as ElementPlusIconsVue from '@element-plus/icons-vue'
     import { onMounted } from 'vue'
     import { useRouter } from 'vue-router'
     const input1 = ref('')
@@ -35,16 +36,21 @@
 
     const toggleSidebar = () => {
         showSidebar.value = !showSidebar.value;
+        isSidebarOpen.value = !isSidebarOpen.value;
     };
     const closeSidebar = () => {
         showSidebar.value = false; // 关闭侧边栏
+        isSidebarOpen.value = false;
     };
+    const isSidebarOpen = ref(false);
+
     const onSuccess = () => {
         // 处理成功回调
     }
 </script>
 
 <template>
+    <div class="overlay" v-if="isSidebarOpen" @click="closeSidebar"></div>
     <page-container title="文案分类">
         <span class="createArticle">
             营销文案
@@ -52,37 +58,34 @@
         </span>
         <div v-if="showSidebar" class="sidebar">
             <!-- 侧边栏内容 -->
-            <el-button @click="closeSidebar" type="text" icon="el-icon-close"></el-button>
+            <el-button @click="closeSidebar" type="info" circle="true"><el-icon size="30"><Close /></el-icon></el-button>
             <div>
                 <p>
-                    文章标题
-                </p>
-                <p>
-                    <input placeholder="请输入标题"></input>
+                    文章标题 <input placeholder="请输入标题"></input>
                 </p>
             </div>
             <div>
                 <p>
-                    文案要求
-                </p>
-                <p>
-                    <input placeholder="请输入内容"></input>
+                    文案要求 <input placeholder="请输入内容"></input>
                 </p>
             </div>
-            <p>
-                <input id="dag" placeholder="待生成"></input>
-            </p>
             <div>
                 <p>
                     <el-button @click="" type="primary">生成大纲</el-button>
                 </p>
             </div>
             <p>
-                <router-link to="/article/edit">进一步生成</router-link>
+                <input id="dag" placeholder="待生成"></input>
+            </p>
+            <p>
+                <router-link to="/article/edit">
+                    <el-button @click="" type="primary">
+                        生成文案
+                    </el-button>
+                </router-link>
             </p>
         </div>
 
-        <channel-edit ref="dialog" @success="onSuccess"></channel-edit>
     </page-container>
 </template>
 
@@ -90,7 +93,7 @@
 <style lang="scss" scoped>
     .sidebar {
         width: 700px;
-        background-color: lightgray;
+        background-color: white;
         position: fixed;
         top: 0;
         right: 0;
@@ -101,9 +104,18 @@
         margin-top: 30px;
         text-align: center;
     }
-    input{
-        width:80%;
-        height:30px;
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
+        z-index: 999; /* 确保遮罩层在最上层 */
+    }
+    input {
+        width: 80%;
+        height: 30px;
     }
     #dag{
         width: 80%;
@@ -134,5 +146,8 @@
         border-radius: 5px;
         cursor: pointer;
         margin-bottom: 15px;
+    }
+    router-link{
+        text-decoration: none; /* 去掉下划线 */
     }
 </style>
