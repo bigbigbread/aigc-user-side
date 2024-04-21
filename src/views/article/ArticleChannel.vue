@@ -44,6 +44,50 @@
     };
     const isSidebarOpen = ref(false);
 
+    
+    // 在你的Vue组件中定义一个方法来获取文章标题和文章内容，并调用接口请求
+    const generateOutline = () => {
+        console.log('成功调用 generateOutline 方法');
+
+        data= ()=> {
+    return {
+        articleTitle: '',
+        articleContent: ''
+    };
+};
+        // 获取文章标题和文章内容
+        
+      const articleTitle = this.articleTitle;
+      const articleContent = this.articleContent;
+    
+
+        // 检查文章标题是否为空
+        if (articleTitle.trim()) {
+            alert('文章标题不能为空');
+            return; // 结束函数
+        }
+        // 整合为JSON数据
+        const data = {
+            title: articleTitle,
+            description: articleContent
+        };
+
+        // 调用接口请求
+        artOutlineService(data)
+            .then(response => {
+                // 输出大纲内容到input标签
+                const dagInput = document.getElementById('dag');
+                dagInput.value = response.outline; // 假设接口返回的大纲内容在response中的outline字段中
+
+                // 处理接口请求成功的逻辑
+                console.log('大纲生成成功', response);
+            })
+            .catch(error => {
+                // 处理接口请求失败的逻辑
+                console.error('大纲生成失败', error);
+            });
+    };
+
     const onSuccess = () => {
         // 处理成功回调
     }
@@ -61,17 +105,17 @@
             <el-button @click="closeSidebar" type="info" circle="true"><el-icon size="30"><Close /></el-icon></el-button>
             <div>
                 <p>
-                    文章标题 <input placeholder="请输入标题"></input>
+                    文章标题 <input v-model="articleTitle" placeholder="请输入标题"></input>
                 </p>
             </div>
             <div>
                 <p>
-                    文案要求 <input placeholder="请输入内容"></input>
+                    文案要求 <input v-model="articleContent" placeholder="请输入内容"></input>
                 </p>
             </div>
             <div>
                 <p>
-                    <el-button @click="" type="primary">生成大纲</el-button>
+                    <el-button @click="generateOutline" type="primary">生成大纲</el-button>
                 </p>
             </div>
             <p>
