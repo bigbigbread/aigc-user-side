@@ -2,32 +2,6 @@
 import { ref } from 'vue'
 import { ElMessage, ElMessageBox, ElDialog } from 'element-plus'
 
-const input1 = ref('')
-const input2 = ref('')
-const generatedText = ref('')
-const dialogVisible = ref(false)
-const textGenerated = ref(false)
-
-const openDialog = () => {
-  dialogVisible.value = true
-}
-
-const generateText = () => {
-  generatedText.value = `${input1.value} - ${input2.value}`
-  dialogVisible.value = false
-  textGenerated.value = true
-}
-
-const saveText = () => {
-  ElMessage.success('文本已保存： ' + generatedText.value)
-  textGenerated.value = false
-}
-
-const closeDialogs = () => {
-  dialogVisible.value = false
-  textGenerated.value = false
-}
-
 const onSuccess = () => {
   // 处理成功回调
 }
@@ -35,6 +9,7 @@ const onSuccess = () => {
 
 <template>
   <page-container title="文案编辑">
+    <div>{{ $route.params.inputData }}</div>
     <channel-edit ref="dialog" @success="onSuccess"></channel-edit>
   </page-container>
 </template>

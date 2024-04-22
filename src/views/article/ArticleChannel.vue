@@ -1,6 +1,7 @@
 <script setup>
     import { ref } from 'vue'
     import { ElMessage, ElMessageBox, ElDialog, ElButton } from 'element-plus'
+    import {artOutlineService,artPublishService} from '@/api/article.js'
     import * as ElementPlusIconsVue from '@element-plus/icons-vue'
     import { onMounted } from 'vue'
     import { useRouter } from 'vue-router'
@@ -9,6 +10,10 @@
     const generatedText = ref('')
     const dialogVisible = ref(false)
     const textGenerated = ref(false)
+    // 定义响应式数据 articleTitle 和 articleContent
+    const articleTitle = ref('')
+    const articleContent = ref('')
+    const outline = ref('')
 
     const openDialog = () => {
         dialogVisible.value = true
@@ -45,39 +50,32 @@
     const isSidebarOpen = ref(false);
 
     
+
     // 在你的Vue组件中定义一个方法来获取文章标题和文章内容，并调用接口请求
     const generateOutline = () => {
+
         console.log('成功调用 generateOutline 方法');
-
-        data= ()=> {
-    return {
-        articleTitle: '',
-        articleContent: ''
-    };
-};
-        // 获取文章标题和文章内容
         
-      const articleTitle = this.articleTitle;
-      const articleContent = this.articleContent;
-    
-
         // 检查文章标题是否为空
-        if (articleTitle.trim()) {
+        if (!articleTitle.value.trim()) {
             alert('文章标题不能为空');
             return; // 结束函数
+        }else{
+            //alert(articleTitle.value);
         }
-        // 整合为JSON数据
+
+        // 整合为 JSON 数据
         const data = {
-            title: articleTitle,
-            description: articleContent
+            "title": articleTitle.value,
+            "description": articleContent.value
         };
 
         // 调用接口请求
         artOutlineService(data)
             .then(response => {
-                // 输出大纲内容到input标签
+                // 输出大纲内容到 input 标签
                 const dagInput = document.getElementById('dag');
-                dagInput.value = response.outline; // 假设接口返回的大纲内容在response中的outline字段中
+                dagInput.value = response.outline; // 假设接口返回的大纲内容在 response 中的 outline 字段中
 
                 // 处理接口请求成功的逻辑
                 console.log('大纲生成成功', response);
@@ -87,6 +85,33 @@
                 console.error('大纲生成失败', error);
             });
     };
+    
+    const createArticle = () => {
+        // 检查文章大纲是否为空
+        if (!outline.value.trim()) {
+            alert('文章大纲不能为空');
+            return; // 结束函数
+        }
+        
+        const data = {
+            "title": articleTitle.value,
+            "description": articleContent.value,
+            "outline": outline.value,
+            "type":''
+        }
+
+        artPublishService(data)
+        .then(response => {
+                //将生成的文章输出在路由edit中，待测试
+                this.$router.push({ name: 'edit', params: { inputData: response.content } });
+                // 处理接口请求成功的逻辑
+                console.log('文章生成成功', response);
+            })
+            .catch(error => {
+                // 处理接口请求失败的逻辑
+                console.error('文章生成失败', error);
+            });
+    }
 
     const onSuccess = () => {
         // 处理成功回调
@@ -119,14 +144,12 @@
                 </p>
             </div>
             <p>
-                <input id="dag" placeholder="待生成"></input>
+                <input id="dag" v-model="outline" placeholder="待生成"></input>
             </p>
             <p>
-                <router-link to="/article/edit">
-                    <el-button @click="" type="primary">
+                    <el-button @click="createArticle" type="primary">
                         生成文案
                     </el-button>
-                </router-link>
             </p>
         </div>
 
