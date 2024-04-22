@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { Delete, Edit } from '@element-plus/icons-vue'
-import ChannelSelect from './components/ChannelSelect.vue'
+//import ChannelSelect from './components/ChannelSelect.vue'
 import ArticleEdit from './components/ArticleEdit.vue'
 import { artGetListService, artDelService } from '@/api/article.js'
 import { formatTime } from '@/utils/format.js'
@@ -21,7 +21,7 @@ const params = ref({
 const getArticleList = async () => {
   loading.value = true
 
-  const res = await artGetListService(params.value)
+  const res = await artGetListService()
   articleList.value = res.data.data
   total.value = res.data.total
 
@@ -62,9 +62,9 @@ const onReset = () => {
 
 const articleEditRef = ref()
 // 添加逻辑
-const onAddArticle = () => {
-  articleEditRef.value.open({})
-}
+//const onAddArticle = () => {
+//  articleEditRef.value.open({})
+//}
 // 编辑逻辑
 const onEditArticle = (row) => {
   articleEditRef.value.open(row)

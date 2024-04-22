@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useUserStore } from '@/stores'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
-const baseURL = 'http://big-event-vue-api-t.itheima.net'
+const baseURL = 'http://116.62.5.195:8080'
 
 const instance = axios.create({
   // TODO 1. 基础地址，超时时间
@@ -16,7 +16,7 @@ instance.interceptors.request.use(
     // TODO 2. 携带token
     const useStore = useUserStore()
     if (useStore.token) {
-      config.headers.Authorization = useStore.token
+      config.headers.Authorization = `Bearer ${useStore.token}`
     }
     return config
   },
@@ -27,7 +27,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (res) => {
     // TODO 4. 摘取核心响应数据
-    if (res.data.code === 0) {
+    if (res.data.code === 200) {
       return res
     }
     // TODO 3. 处理业务失败

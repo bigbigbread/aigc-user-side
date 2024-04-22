@@ -9,7 +9,7 @@ const form = ref()
 
 // 整个的用于提交的form数据对象
 const formModel = ref({
-  username: '',
+  name: '',
   password: '',
   repassword: ''
 })
@@ -25,7 +25,7 @@ const formModel = ref({
 //        - callback() 校验成功
 //        - callback(new Error(错误信息)) 校验失败
 const rules = {
-  username: [
+  name: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 5, max: 10, message: '用户名必须是 5-10位 的字符', trigger: 'blur' }
   ],
@@ -69,17 +69,26 @@ const register = async () => {
 const userStore = useUserStore()
 const router = useRouter()
 const login = async () => {
-  await form.value.validate()
-  const res = await userLoginService(formModel.value)
-  userStore.setToken(res.data.token)
-  ElMessage.success('登录成功')
-  router.push('/')
+  await form.value.validate() // 确保表单数据通过验证
+  try {
+    const res = await userLoginService(formModel.value)
+    if (res.data.code === 200) {
+      userStore.setToken(res.data.data) // 直接使用后端返回的 token 字符串)
+      ElMessage.success('登录成功')
+      router.push('/') // 导航到主页
+    } else {
+      console.log(res)
+      ElMessage.error('登录失败: ' + res.data.message) // 显示错误信息
+    }
+  } catch (error) {
+    ElMessage.error('请求失败，请检查网络连接') // 处理网络或其他错误
+  }
 }
 
 // 切换的时候，重置表单内容
 watch(isRegister, () => {
   formModel.value = {
-    username: '',
+    name: '',
     password: '',
     repassword: ''
   }
@@ -119,9 +128,9 @@ watch(isRegister, () => {
         <el-form-item>
           <h1>注册</h1>
         </el-form-item>
-        <el-form-item prop="username">
+        <el-form-item prop="name">
           <el-input
-            v-model="formModel.username"
+            v-model="formModel.name"
             :prefix-icon="User"
             placeholder="请输入用户名"
           ></el-input>
@@ -171,9 +180,9 @@ watch(isRegister, () => {
         <el-form-item>
           <h1>登录</h1>
         </el-form-item>
-        <el-form-item prop="username">
+        <el-form-item prop="name">
           <el-input
-            v-model="formModel.username"
+            v-model="formModel.name"
             :prefix-icon="User"
             placeholder="请输入用户名"
           ></el-input>
