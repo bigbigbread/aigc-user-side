@@ -72,6 +72,7 @@ const login = async () => {
   await form.value.validate() // 确保表单数据通过验证
   try {
     const res = await userLoginService(formModel.value)
+    userStore.setUser(formModel.value.name)
     if (res.data.code === 200) {
       userStore.setToken(res.data.data) // 直接使用后端返回的 token 字符串)
       ElMessage.success('登录成功')

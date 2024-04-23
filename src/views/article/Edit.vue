@@ -9,7 +9,7 @@ const onSuccess = () => {
 
 <template>
   <page-container title="文案编辑">
-    <div>{{ $route.params.inputData }}</div>
+    <div>{{}}</div>
     <channel-edit ref="dialog" @success="onSuccess"></channel-edit>
   </page-container>
 </template>
