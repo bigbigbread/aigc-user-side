@@ -7,7 +7,7 @@ const baseURL = 'http://116.62.5.195:8080'
 const instance = axios.create({
   // TODO 1. 基础地址，超时时间
   baseURL,
-  timeout: 10000
+  timeout: 100000
 })
 
 // 请求拦截器

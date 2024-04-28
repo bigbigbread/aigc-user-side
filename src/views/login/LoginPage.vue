@@ -70,20 +70,19 @@ const userStore = useUserStore()
 const router = useRouter()
 const login = async () => {
   await form.value.validate() // 确保表单数据通过验证
-  try {
-    const res = await userLoginService(formModel.value)
-    userStore.setUser(formModel.value.name)
-    if (res.data.code === 200) {
-      userStore.setToken(res.data.data) // 直接使用后端返回的 token 字符串)
-      ElMessage.success('登录成功')
-      router.push('/') // 导航到主页
-    } else {
-      console.log(res)
-      ElMessage.error('登录失败: ' + res.data.message) // 显示错误信息
+    try {
+      const res = await userLoginService(formModel.value)
+      if (res.data.code === 200) {
+        userStore.setToken(res.data.data) // 直接使用后端返回的 token 字符串)
+        ElMessage.success('登录成功')
+        router.push('/') // 导航到主页
+      } else {
+        console.log(res)
+        ElMessage.error('登录失败: ' + res.data.message) // 显示错误信息
+      }
+    } catch (error) {
+      ElMessage.error('请求失败，请检查网络连接') // 处理网络或其他错误
     }
-  } catch (error) {
-    ElMessage.error('请求失败，请检查网络连接') // 处理网络或其他错误
-  }
 }
 
 // 切换的时候，重置表单内容

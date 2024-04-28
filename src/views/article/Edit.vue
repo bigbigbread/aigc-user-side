@@ -9,29 +9,19 @@ const onSuccess = () => {
 
 <template>
   <page-container title="文案编辑">
-    <div>{{}}</div>
+    <div class="edit">{{ $route.params.inputData }}</div>
+    <div style="justify-content: center;display: flex;"><button class="saveArticle">保存</button>
+    </div>
     <channel-edit ref="dialog" @success="onSuccess"></channel-edit>
   </page-container>
 </template>
 
 <style lang="scss" scoped>
-.createArticle {
-  display: inline-block;
-  font-size: 30px;
-  font-weight: bold;
-  padding-top: 30px;
-  width: 200px;
-  height: 150px;
-  text-align: center;
-  background-color: #cfe2ff;
-  position: relative;
+.edit{
+  height: 500px;
 }
-
-.createArticle button {
-  position: absolute;
+.saveArticle{
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
   background-color: #007bff;
   color: white;
   padding: 5px 10px;

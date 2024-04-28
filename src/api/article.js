@@ -12,13 +12,12 @@ export const artDelChannelService = (id) =>
     params: { id }
   })
 
+
 // 文章1：获取文章列表
 export const artGetListService = () => request.get('/article')
 
 // 文章1：生成文章
-// 注意：data需要是一个formData格式的对象
-export const artPublishService = (data) =>
-  request.post('/aigc/finalArtical', data)
+export const artPublishService = (data) => request.post('/aigc/finalArticle', data)
 
 // 文章1：获取文章详情
 export const artGetDetailService = (id) =>
@@ -35,5 +34,6 @@ export const artEditService = (id, data) =>
 // 文章：删除文章接口
 export const artDelService = (id) =>
   request.delete('/my/article/info', { params: { id } })
-//生成提纲
-export const artOutlineService = (data) => request.post('/aigc/outline', data)
+
+//生成大纲
+  export const artOutlineService = (data) => request.post('/aigc/outline', data)

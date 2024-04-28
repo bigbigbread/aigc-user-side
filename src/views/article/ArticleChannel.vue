@@ -52,9 +52,9 @@
     
 
     // 在你的Vue组件中定义一个方法来获取文章标题和文章内容，并调用接口请求
-    const generateOutline = () => {
+    const generateOutline = async() => {
 
-        console.log('成功调用 generateOutline 方法');
+        //console.log('成功调用 generateOutline 方法');
         
         // 检查文章标题是否为空
         if (!articleTitle.value.trim()) {
@@ -71,19 +71,17 @@
         };
 
         // 调用接口请求
-        artOutlineService(data)
-            .then(response => {
-                // 输出大纲内容到 input 标签
-                const dagInput = document.getElementById('dag');
-                dagInput.value = response.outline; // 假设接口返回的大纲内容在 response 中的 outline 字段中
-
-                // 处理接口请求成功的逻辑
-                console.log('大纲生成成功', response);
-            })
-            .catch(error => {
-                // 处理接口请求失败的逻辑
-                console.error('大纲生成失败', error);
-            });
+        
+        const res = await artOutlineService(data)
+        if (res.data.code === 200) {
+            ElMessage.success('生成成功')
+            const dagInput = document.getElementById('dag');
+            dagInput.value = res.data.data;
+        } else {
+            console.log(res)
+            ElMessage.error('生成失败: ' + res.message) // 显示错误信息
+        }
+        
     };
     
     const createArticle = () => {
@@ -95,9 +93,7 @@
         
         const data = {
             "title": articleTitle.value,
-            "description": articleContent.value,
             "outline": outline.value,
-            "type":''
         }
 
         artPublishService(data)
@@ -144,7 +140,7 @@
                 </p>
             </div>
             <p>
-                <input id="dag" v-model="outline" placeholder="待生成"></input>
+                <textarea type="text" id="dag" v-model="outline" placeholder="待生成"></textarea>
             </p>
             <p>
                     <el-button @click="createArticle" type="primary">
@@ -185,9 +181,10 @@
         height: 30px;
     }
     #dag{
-        width: 80%;
         height: 300px;
-        text-align:center;
+        width:80%;
+        font-size: 14px;
+        overflow: auto;
     }
     .createArticle {
         display: inline-block;
