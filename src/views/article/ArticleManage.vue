@@ -5,10 +5,11 @@ import { Delete, Edit } from '@element-plus/icons-vue'
 import ArticleEdit from './components/ArticleEdit.vue'
 import { artGetListService, artDelService } from '@/api/article.js'
 import { formatTime } from '@/utils/format.js'
+import { useRouter } from 'vue-router'
 const articleList = ref([]) // 文章列表
 const total = ref(0) // 总条数
 const loading = ref(false) // loading状态
-
+const router = useRouter()
 // 定义请求参数对象
 const params = ref({
   pagenum: 1, // 当前页
@@ -67,9 +68,17 @@ const articleEditRef = ref()
 //}
 // 编辑逻辑
 const onEditArticle = (row) => {
-  articleEditRef.value.open(row)
+  // 使用 router.push 携带参数跳转到编辑页面
+  router.push({
+    name: 'edit',
+    query: {
+      // 将文章内容作为参数传递
+      articleId: row.id,
+      articleContent: row.content
+      // 添加其他需要传递的参数
+    }
+  })
 }
-
 // 删除逻辑
 const onDeleteArticle = async (row) => {
   // 提示用户是否要删除
@@ -123,7 +132,7 @@ const onSuccess = (type) => {
       </el-table-column>
       <el-table-column label="生成时间" prop="pub_date">
         <template #default="{ row }">
-          {{ formatTime(row.pub_date) }}
+          {{ formatTime(row.createdTime) }}
         </template>
       </el-table-column>
       <!-- 利用作用域插槽 row 可以获取当前行的数据 => v-for 遍历 item -->
