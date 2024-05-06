@@ -9,27 +9,33 @@ const onSuccess = () => {
 }
 const route = useRoute()
 let article = route.query.articleContent
+let title = route.query.articleTitle
+
 
 const saveArticle = async() => {
     console.log('成功调用方法');
-    // 检查文章大纲是否为空
-    if (!outline.value.trim()) {
+    var title = document.getElementById("title")
+    var content = document.getElementById("content")
+    // 检查文章是否为空
+    if (!title.value.trim()) {
+        alert('文章标题不能为空');
+        return; // 结束函数
+    }
+    if (!content.value.trim()) {
         alert('文章不能为空');
         return; // 结束函数
     }
 
     const data = {
-        "title": articleTitle.value,
-        "outline": outline.value,
+        "title": title.value,
+        "content": content.value,
     }
     const res = await artSave(data)
     if (res.data.code === 200) {
-        ElMessage.success('生成成功')
-        const input = res.data.data;
-        router.push({ name: 'edit', query: { input } });
+        ElMessage.success('保存成功')
     } else {
         console.log(res)
-        ElMessage.error('生成失败: ' + res.data.message) // 显示错误信息
+        ElMessage.error('保存失败: ' + res.data.message) // 显示错误信息
     }
     
 }
@@ -37,18 +43,29 @@ const saveArticle = async() => {
 
 <template>
   <page-container title="文案编辑"> 
-    <textarea class="edit">{{ article }}</textarea>
-    <div style="justify-content: center;display: flex;"><button class="saveArticle">保存</button>
+    <div class="titleEdit">
+      <p>
+        标题
+        <textarea id="title">{{ title }}</textarea>
+      </p>
+    </div>
+    <textarea class="edit" id="content">{{ article }}</textarea>
+    <div style="justify-content: center;display: flex;"><button class="saveArticle" @click="saveArticle">保存</button>
     </div>
     <channel-edit ref="dialog" @success="onSuccess"></channel-edit>
-
-    @@ -18,17 +20,19 @@
   </page-container>
 </template>
 <style lang="scss" scoped>
+div p{
+  margin-top:0;
+  
+}
+.titleEdit{
+  display: flex;
+}
 .edit {
   height: 500px;
-  height: 480px;
+  height: 460px;
   width: 100%;
   overflow: auto;
 }

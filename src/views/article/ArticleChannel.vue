@@ -101,12 +101,11 @@ const createArticle = async() => {
 //测试
     // const input = 123;
     //     router.push({ name: 'edit', query: { input } });
-
     const res = await artPublishService(data)
     if (res.data.code === 200) {
         ElMessage.success('生成成功')
         const articleContent = res.data.data;
-        router.push({ name: 'edit', query: { articleContent } });
+        router.push({ name: 'edit', query: { articleContent,articleTitle:articleTitle.value } });
     } else {
         console.log(res)
         ElMessage.error('生成失败: ' + res.data.message) // 显示错误信息
@@ -123,7 +122,7 @@ const onSuccess = () => {
     <div class="overlay" v-if="isSidebarOpen" @click="closeSidebar"></div>
     <page-container title="文案分类">
         <span class="createArticle">
-            营销文案
+            文章生成
             <button @click="toggleSidebar">生成</button>
         </span>
         <div v-if="showSidebar" class="sidebar">
