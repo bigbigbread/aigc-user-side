@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import { inject } from 'vue';
 import { ElMessage, ElMessageBox, ElDialog, ElButton } from 'element-plus'
 import { artOutlineService, artPublishService } from '@/api/article.js'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
@@ -99,11 +98,15 @@ const createArticle = async() => {
         "title": articleTitle.value,
         "outline": outline.value,
     }
+//测试
+    // const input = 123;
+    //     router.push({ name: 'edit', query: { input } });
+
     const res = await artPublishService(data)
     if (res.data.code === 200) {
         ElMessage.success('生成成功')
-        const input = res.data.data;
-        router.push({ name: 'edit', query: { input } });
+        const articleContent = res.data.data;
+        router.push({ name: 'edit', query: { articleContent } });
     } else {
         console.log(res)
         ElMessage.error('生成失败: ' + res.data.message) // 显示错误信息

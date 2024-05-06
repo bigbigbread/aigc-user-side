@@ -13,6 +13,7 @@ export const artDelChannelService = (id) =>
   })
 
 
+
 // 文章1：获取文章列表
 export const artGetListService = () => request.get('/article')
 
@@ -30,6 +31,9 @@ export const artEditService = (id, data) =>
   request.put('/article/save', data, {
     params: { id }
   })
+//保存文章接口
+export const artSave = (data) =>
+  request.post('/article/save', data)
 
 // 文章：删除文章接口
 export const artDelService = (id) =>
