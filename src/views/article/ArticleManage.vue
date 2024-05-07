@@ -74,6 +74,7 @@ const onEditArticle = (row) => {
     query: {
       // 将文章内容作为参数传递
       articleId: row.id,
+      articleTitle:row.title,
       articleContent: row.content
       // 添加其他需要传递的参数
     }

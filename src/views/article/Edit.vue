@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import { ElMessage, ElMessageBox, ElDialog } from 'element-plus'
 
 import { useRoute } from 'vue-router'
@@ -10,6 +10,15 @@ const onSuccess = () => {
 const route = useRoute()
 let article = route.query.articleContent
 let title = route.query.articleTitle
+let id = route.query.articleId
+let time = route.query.time
+
+onMounted(() => {
+  const input = document.getElementById("title");
+  if (input) {
+    input.value = title;
+  }
+});
 
 
 const saveArticle = async() => {
@@ -29,6 +38,8 @@ const saveArticle = async() => {
     const data = {
         "title": title.value,
         "content": content.value,
+        "createdTime":time,
+        "id":id
     }
     const res = await artSave(data)
     if (res.data.code === 200) {
@@ -46,7 +57,7 @@ const saveArticle = async() => {
     <div class="titleEdit">
       <p>
         标题
-        <textarea id="title">{{ title }}</textarea>
+        <input id="title" type="text" value="" >
       </p>
     </div>
     <textarea class="edit" id="content">{{ article }}</textarea>
