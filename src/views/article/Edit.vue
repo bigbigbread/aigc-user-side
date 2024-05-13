@@ -1,77 +1,72 @@
 <script setup>
-import { ref,onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox, ElDialog } from 'element-plus'
-
 import { useRoute } from 'vue-router'
 import { artSave } from '@/api/article.js'
+import { articleStore } from '@/stores'
 const onSuccess = () => {
   // 处理成功回调
 }
-const route = useRoute()
-let article = route.query.articleContent
-let title = route.query.articleTitle
-let id = route.query.articleId
-let time = route.query.time
+
+const articlestore = articleStore()
+const data = {
+  title: articlestore.title,
+  content: articlestore.content,
+  createdTime: articlestore.createdTime,
+  id: articlestore.id
+}
 
 onMounted(() => {
-  const input = document.getElementById("title");
+  const input = document.getElementById('title')
   if (input) {
-    input.value = title;
+    input.value = data.title
   }
-});
+})
 
+const saveArticle = async () => {
+  console.log('成功调用方法')
+  var title = document.getElementById('title')
+  var content = document.getElementById('content')
+  // 检查文章是否为空
+  if (!title.value.trim()) {
+    alert('文章标题不能为空')
+    return // 结束函数
+  }
+  if (!content.value.trim()) {
+    alert('文章不能为空')
+    return // 结束函数
+  }
 
-const saveArticle = async() => {
-    console.log('成功调用方法');
-    var title = document.getElementById("title")
-    var content = document.getElementById("content")
-    // 检查文章是否为空
-    if (!title.value.trim()) {
-        alert('文章标题不能为空');
-        return; // 结束函数
-    }
-    if (!content.value.trim()) {
-        alert('文章不能为空');
-        return; // 结束函数
-    }
-
-    const data = {
-        "title": title.value,
-        "content": content.value,
-        "createdTime":time,
-        "id":id
-    }
-    const res = await artSave(data)
-    if (res.data.code === 200) {
-        ElMessage.success('保存成功')
-    } else {
-        console.log(res)
-        ElMessage.error('保存失败: ' + res.data.message) // 显示错误信息
-    }
-    
+  const res = await artSave(data)
+  if (res.data.code === 200) {
+    ElMessage.success('保存成功')
+  } else {
+    console.log(res)
+    ElMessage.error('保存失败: ' + res.data.message) // 显示错误信息
+  }
 }
 </script>
 
 <template>
-  <page-container title="文案编辑"> 
+  <page-container title="文案编辑">
     <div class="titleEdit">
       <p>
         标题
-        <input id="title" type="text" value="" >
+        <input id="title" type="text" v-model="data.title" />
       </p>
     </div>
-    <textarea class="edit" id="content">{{ article }}</textarea>
-    <div style="justify-content: center;display: flex;"><button class="saveArticle" @click="saveArticle">保存</button>
+    <textarea class="edit" id="content" v-model="data.content"></textarea>
+    <div style="justify-content: center; display: flex">
+      <button class="saveArticle" @click="saveArticle">保存</button>
     </div>
     <channel-edit ref="dialog" @success="onSuccess"></channel-edit>
   </page-container>
 </template>
 <style lang="scss" scoped>
-div p{
-  margin-top:0;
-  
+div p {
+  margin-top: 0;
 }
-.titleEdit{
+.titleEdit {
   display: flex;
 }
 .edit {

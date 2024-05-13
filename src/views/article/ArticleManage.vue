@@ -6,6 +6,7 @@ import ArticleEdit from './components/ArticleEdit.vue'
 import { artGetListService, artDelService } from '@/api/article.js'
 import { formatTime } from '@/utils/format.js'
 import { useRouter } from 'vue-router'
+import { articleStore } from '@/stores'
 const articleList = ref([]) // 文章列表
 const total = ref(0) // 总条数
 const loading = ref(false) // loading状态
@@ -67,18 +68,15 @@ const articleEditRef = ref()
 //  articleEditRef.value.open({})
 //}
 // 编辑逻辑
+const articlestore = articleStore()
 const onEditArticle = (row) => {
-  // 使用 router.push 携带参数跳转到编辑页面
-  router.push({
-    name: 'edit',
-    query: {
-      // 将文章内容作为参数传递
-      articleId: row.id,
-      articleTitle:row.title,
-      articleContent: row.content
-      // 添加其他需要传递的参数
-    }
+  articlestore.setarticle({
+    id: row.id,
+    title: row.title,
+    content: row.content,
+    createdTime: row.createdTime
   })
+  router.push({ name: 'edit' })
 }
 // 删除逻辑
 const onDeleteArticle = async (row) => {
