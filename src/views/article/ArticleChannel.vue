@@ -4,6 +4,9 @@ import { ElMessage, ElMessageBox, ElDialog, ElButton } from 'element-plus'
 import { artOutlineService, artPublishService } from '@/api/article.js'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { onMounted } from 'vue'
+import MarkdownIt from "markdown-it";
+import TurndownService from 'turndown';
+import { articleStore } from '@/stores'
 import { useRouter } from 'vue-router'
 const input1 = ref('')
 const input2 = ref('')
@@ -15,29 +18,10 @@ const articleTitle = ref('')
 const articleContent = ref('')
 const outline = ref('')
 const router = useRouter();
+const articlestore = articleStore()
 
-const openDialog = () => {
-    dialogVisible.value = true
-}
-// 添加逻辑
-const onAddArticle = () => {
-    articleEditRef.value.open({})
-}
-const generateText = () => {
-    generatedText.value = `${input1.value} - ${input2.value}`
-    dialogVisible.value = false
-    textGenerated.value = true
-}
+const markdown = new MarkdownIt();
 
-const saveText = () => {
-    ElMessage.success("文本已保存： " + generatedText.value);
-    textGenerated.value = false
-}
-
-const closeDialogs = () => {
-    dialogVisible.value = false
-    textGenerated.value = false
-}
 const showSidebar = ref(false);
 
 const toggleSidebar = () => {
@@ -77,7 +61,7 @@ const generateOutline = async () => {
     if (res.data.code === 200) {
         ElMessage.success('生成成功')
         const dagInput = document.getElementById('dag');
-        dagInput.value = res.data.data;
+        dagInput.value = markdown.render(res.data.data);
         dagInput.dispatchEvent(new Event('input'));
     } else {
         console.log(res)
@@ -86,8 +70,8 @@ const generateOutline = async () => {
 
 };
 
-const createArticle = async() => {
-    console.log('成功调用方法');
+const createArticle = async () => {
+    //console.log('成功调用方法');
     // 检查文章大纲是否为空
     if (!outline.value.trim()) {
         alert('文章大纲不能为空');
@@ -98,19 +82,26 @@ const createArticle = async() => {
         "title": articleTitle.value,
         "outline": outline.value,
     }
-//测试
+    //测试
     // const input = 123;
     //     router.push({ name: 'edit', query: { input } });
     const res = await artPublishService(data)
     if (res.data.code === 200) {
         ElMessage.success('生成成功')
-        const articleContent = res.data.data;
-        router.push({ name: 'edit', query: { articleContent,articleTitle:articleTitle.value } });
+        articlestore.setarticle({
+            id: null,
+            title: articleTitle.value,
+            content: res.data.data,
+            createdTime: null
+        })
+        router.push({ name: 'edit' })
+        // const articleContent = res.data.data;
+        // router.push({ name: 'edit', query: { articleContent, articleTitle: articleTitle.value } });
     } else {
         console.log(res)
         ElMessage.error('生成失败: ' + res.data.message) // 显示错误信息
     }
-    
+
 }
 
 const onSuccess = () => {
