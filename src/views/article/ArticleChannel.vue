@@ -61,7 +61,7 @@ const generateOutline = async () => {
     if (res.data.code === 200) {
         ElMessage.success('生成成功')
         const dagInput = document.getElementById('dag');
-        dagInput.value = markdown.render(res.data.data);
+        dagInput.value = res.data.data;
         dagInput.dispatchEvent(new Event('input'));
     } else {
         console.log(res)

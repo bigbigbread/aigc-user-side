@@ -37,7 +37,7 @@ export const artSave = (data) =>
 
 // 文章：删除文章接口
 export const artDelService = (id) =>
-  request.delete('/my/article/info', { params: { id } })
+  request.delete('/article/delete/'+id)
 
 //生成大纲
   export const artOutlineService = (data) => request.post('/aigc/outline', data)
