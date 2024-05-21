@@ -12,25 +12,32 @@ export const artDelChannelService = (id) =>
     params: { id }
   })
 
-// 文章：获取文章列表
-export const artGetListService = (params) =>
-  request.get('/my/article/list', {
-    params
-  })
 
-// 文章：添加文章
-// 注意：data需要是一个formData格式的对象
-export const artPublishService = (data) => request.post('/my/article/add', data)
 
-// 文章：获取文章详情
+// 文章1：获取文章列表
+export const artGetListService = () => request.get('/article')
+
+// 文章1：生成文章
+export const artPublishService = (data) => request.post('/aigc/finalArticle', data)
+
+// 文章1：获取文章详情
 export const artGetDetailService = (id) =>
-  request.get('/my/article/info', {
+  request.get('/sort', {
     params: { id }
   })
 
-// 文章：编辑文章接口
-export const artEditService = (data) => request.put('/my/article/info', data)
+// 文章1：编辑文章接口
+export const artEditService = (id, data) =>
+  request.put('/article/save', data, {
+    params: { id }
+  })
+//保存文章接口
+export const artSave = (data) =>
+  request.post('/article/save', data)
 
 // 文章：删除文章接口
 export const artDelService = (id) =>
-  request.delete('/my/article/info', { params: { id } })
+  request.delete('/article/delete/'+id)
+
+//生成大纲
+  export const artOutlineService = (data) => request.post('/aigc/outline', data)

@@ -1,68 +1,96 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox, ElDialog } from 'element-plus'
-
-const input1 = ref('')
-const input2 = ref('')
-const generatedText = ref('')
-const dialogVisible = ref(false)
-const textGenerated = ref(false)
-
-const openDialog = () => {
-  dialogVisible.value = true
-}
-
-const generateText = () => {
-  generatedText.value = `${input1.value} - ${input2.value}`
-  dialogVisible.value = false
-  textGenerated.value = true
-}
-
-const saveText = () => {
-  ElMessage.success('文本已保存： ' + generatedText.value)
-  textGenerated.value = false
-}
-
-const closeDialogs = () => {
-  dialogVisible.value = false
-  textGenerated.value = false
-}
-
+import { useRoute } from 'vue-router'
+import { artSave } from '@/api/article.js'
+import E from "wangeditor";
+import MarkdownIt from "markdown-it";
+import TurndownService from 'turndown';
+import { articleStore } from '@/stores'
 const onSuccess = () => {
   // 处理成功回调
 }
+const markdown = new MarkdownIt();
+const turndownService = new TurndownService();
+const articlestore = articleStore()
+const data = {
+  title: articlestore.title,
+  content: articlestore.content,
+  createdTime: articlestore.createdTime,
+  id: articlestore.id
+}
+let editor; // 声明一个变量来保存编辑器实例
+onMounted(() => {
+  const input = document.getElementById('title')
+  if (input) {
+    input.value = data.title
+  }
+  
+//富文本编辑器
+  editor = new E('#editor');
+  editor.create();
+  editor.txt.html(markdown.render(data.content))
+})
+
+const saveArticle = async () => {
+  console.log('成功调用方法')
+  var title = document.getElementById('title')
+  // 检查文章是否为空
+  if (!title.value.trim()) {
+    alert('文章标题不能为空')
+    return // 结束函数
+  }
+  data.content = turndownService.turndown(editor.txt.html())
+  const res = await artSave(data)
+  if (res.data.code === 200) {
+    ElMessage.success('保存成功')
+  } else {
+    console.log(res)
+    ElMessage.error('保存失败: ' + res.data.message) // 显示错误信息
+  }
+}
 </script>
+
 
 <template>
   <page-container title="文案编辑">
+    <div class="titleEdit">
+      <p>
+        标题
+        <input id="title" type="text" v-model="data.title" />
+      </p>
+    </div>
+    <div id="editor" >
+    </div>
+    
+    <div style="justify-content: center; display: flex">
+      <button class="saveArticle" @click="saveArticle">保存</button>
+    </div>
     <channel-edit ref="dialog" @success="onSuccess"></channel-edit>
   </page-container>
 </template>
-
 <style lang="scss" scoped>
-.createArticle {
-  display: inline-block;
-  font-size: 30px;
-  font-weight: bold;
-  padding-top: 30px;
-  width: 200px;
-  height: 150px;
-  text-align: center;
-  background-color: #cfe2ff;
-  position: relative;
-}
 
-.createArticle button {
-  position: absolute;
+div p {
+  margin-top: 0;
+}
+.titleEdit {
+  display: flex;
+}
+.edit {
+  height: 460px;
+  width: 100%;
+  overflow: auto;
+}
+button {
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
   background-color: #007bff;
   color: white;
   padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 15px;
+  margin-right: 15px;
+  margin-top: 15px;
 }
 </style>

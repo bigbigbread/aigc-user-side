@@ -1,14 +1,16 @@
 <script setup>
 import { ref } from 'vue'
 import { Delete, Edit } from '@element-plus/icons-vue'
-import ChannelSelect from './components/ChannelSelect.vue'
+//import ChannelSelect from './components/ChannelSelect.vue'
 import ArticleEdit from './components/ArticleEdit.vue'
 import { artGetListService, artDelService } from '@/api/article.js'
 import { formatTime } from '@/utils/format.js'
+import { useRouter } from 'vue-router'
+import { articleStore } from '@/stores'
 const articleList = ref([]) // 文章列表
 const total = ref(0) // 总条数
 const loading = ref(false) // loading状态
-
+const router = useRouter()
 // 定义请求参数对象
 const params = ref({
   pagenum: 1, // 当前页
@@ -21,7 +23,7 @@ const params = ref({
 const getArticleList = async () => {
   loading.value = true
 
-  const res = await artGetListService(params.value)
+  const res = await artGetListService()
   articleList.value = res.data.data
   total.value = res.data.total
 
@@ -62,14 +64,20 @@ const onReset = () => {
 
 const articleEditRef = ref()
 // 添加逻辑
-const onAddArticle = () => {
-  articleEditRef.value.open({})
-}
+//const onAddArticle = () => {
+//  articleEditRef.value.open({})
+//}
 // 编辑逻辑
+const articlestore = articleStore()
 const onEditArticle = (row) => {
-  articleEditRef.value.open(row)
+  articlestore.setarticle({
+    id: row.id,
+    title: row.title,
+    content: row.content,
+    createdTime: row.createdTime
+  })
+  router.push({ name: 'edit' })
 }
-
 // 删除逻辑
 const onDeleteArticle = async (row) => {
   // 提示用户是否要删除
@@ -123,7 +131,7 @@ const onSuccess = (type) => {
       </el-table-column>
       <el-table-column label="生成时间" prop="pub_date">
         <template #default="{ row }">
-          {{ formatTime(row.pub_date) }}
+          {{ formatTime(row.createdTime) }}
         </template>
       </el-table-column>
       <!-- 利用作用域插槽 row 可以获取当前行的数据 => v-for 遍历 item -->

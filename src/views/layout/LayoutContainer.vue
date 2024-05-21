@@ -11,14 +11,14 @@ import {
 } from '@element-plus/icons-vue'
 import avatar from '@/assets/default.png'
 import { useUserStore } from '@/stores'
-import { onMounted } from 'vue'
+//import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 const userStore = useUserStore()
 const router = useRouter()
 
-onMounted(() => {
-  userStore.getUser()
-})
+// onMounted(() => {
+//   userStore.getUser()
+// })
 
 const handleCommand = async (key) => {
   if (key === 'logout') {
